@@ -28,6 +28,9 @@ dependencies = [
 notebooks = [
     "ipykernel>=6.29.5",
 ]
+dev = [
+    "pytest>=8.3.5",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]  # Search for packages in the 'src' directory
