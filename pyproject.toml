@@ -16,10 +16,18 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "numpy>=1.24.4",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/EricWu23/ml-algorithm-playground"
 "Bug Tracker" = "https://github.com/EricWu23/ml-algorithm-playground/issues"
+
+[project.optional-dependencies]
+notebooks = [
+    "ipykernel>=6.29.5",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]  # Search for packages in the 'src' directory
