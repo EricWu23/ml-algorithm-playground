@@ -27,6 +27,8 @@ dependencies = [
 [project.optional-dependencies]
 notebooks = [
     "ipykernel>=6.29.5",
+    "pandas>=3.0.0",
+    "scikit-learn"
 ]
 dev = [
     "pytest>=8.3.5",
