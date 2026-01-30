@@ -18,30 +18,27 @@ class MultinomialNaiveBayes:
         self.alpha = alpha  # Laplace smoothing parameter
         self.class_log_prior_ = None
         self.feature_log_prob_ = None
-        self.classes_ = None
+        self.classes_ = None #(q,)
+        self.y_indexes_ = None# (n,)
     
     def _initialization(self, X, y):
         #assert X.dim == 2
         #if y.ndim == 1:
         #    y = y.reshape(-1, 1)
         n,d = X.shape
-        self.classes_ = np.unique(y)
+        self.classes_, self.y_indexes_ = np.unique(y,return_inverse = False)
+        q = len(self.classes_)
         self.class_log_prior_ = np.zeros(len(self.classes_))
         self.feature_log_prob_ = np.zeros((len(self.classes_), d))
-        return n, d
+        return n,d,q
     
     def fit(self, X, y):
         """The main goal of fitting is to compute class log prior and feature log prob"""
-        n,d= self._initialization(X, y)
-        self.class_log_prior_ = np.log(np.array([np.sum(y==c) for c in self.classes_])/n)
-        #label to index mapping
-        class_to_index = { c: i for i,c in enumerate(self.classes_)}
-        y_indexes = np.array([class_to_index[label] for label in y])
-        # label to one-hot encoding
-        q = len(self.classes_)
-        Y = np.eye(q)[y_indexes]                                # (n,q)
-        # use one-hot as mask to sum feature counts per class  over samples
-        feature_count = Y.T @ X                             # (q,d)
+        n,d,q= self._initialization(X, y)
+        class_count = np.bincount(self.y_indexes_, minlength=q) #(q,)
+        self.class_log_prior_ = np.log(class_count/n)  #(q,) 
+        feature_count = np.zeros((q,d)) #(q,d)
+        np.add.at(feature_count,self.y_indexes_, X)
         # add smoothing (Laplace smoothing)
         smoothed_fc = feature_count + self.alpha #(q,d)
         smoothed_cc = smoothed_fc.sum(axis=1).reshape(-1,1)  #(q,1)
